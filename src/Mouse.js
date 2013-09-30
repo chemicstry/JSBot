@@ -144,8 +144,9 @@ var JBMouse = function() {
         }
         
         SendMouseDown(x, y, button);
-        SleepMS(RandomInt(50, 500));
-        SendMouseUp(button);
+        
+        // Send mouse up delayed
+        setTimeout(SendMouseUp, JBUtil.RandomInt(10, 200), button);
     };
     
     return C;

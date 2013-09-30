@@ -49,38 +49,55 @@ var JBMovement = function()
         var mm = this.WorldPosToMinimap(dst);
         JBMouse.Move(mm.x, mm.y);
         JBMouse.Click(0);
+        return true;
     };
     
-    // Walks a path (JBPos array)
-    C.WalkPath = function(path)
+    C.WalkPathEx = function(path, i, callback)
     {
-        var curpos = GetPosition();
+        if (i < path.length) {
+            // Walk
+            if (!C.WalkTo(path[i]))
+                callback(false);
+            
+            // Wait until we reach point
+            C.WalkPathCheck(path, i, callback);
+        } else
+            callback(true); // Send a positive callback
+    }
+    
+    C.WalkPathCheck = function(path, i, callback)
+    {
+        // If it's not last point, wait until it appears in minimap range
+        if (path[i+1] && JBUtil.Distance2D(C.GetPosition(), path[i+1]) > (MinimapRadius/MinimapScale))
+            setTimeout(C.WalkPathCheck, 500, path, i, callback);
+        // If it's last point, wait until we reach it
+        else if ((i == path.length-1) && (JBUtil.Distance2D(C.GetPosition(), path[i]) > 2))
+            setTimeout(C.WalkPathCheck, 500, path, i, callback);
+        // We waited long enough, now walk!
+        else
+            C.WalkPathEx(path, i+1, callback);
+    }
+    
+    // Walks a path (JBPos array)
+    C.WalkPath = function(path, callback)
+    {
+        var curpos = C.GetPosition();
         
         // Find furthest point on minimap
         var furthest = -1;
         for (var i = path.length-1; i >= 0; --i)
         {
+            console.log(JBUtil.Distance2D(curpos, path[i]));
             if (JBUtil.Distance2D(curpos, path[i]) < (MinimapRadius/MinimapScale)) {
                 furthest = i;
                 break;
             }
         }
         
-        // Walkie
-        for (var i = furthest; i < path.length; ++i)
-        {
-            if (!WalkTo(path[i]))
-                return false;
-            
-            if (i < path.length-1) {
-                while (JBUtil.Distance2D(GetPosition(), path[i+1]) > (MinimapRadius/MinimapScale))
-                    JBUtil.Sleep(500);
-            }
-        }
+        if (furthest == -1)
+            callback(false);
         
-        // Wait until we reach last point
-        while (JBUtil.Distance2D(GetPosition(), path[path.length-1]) > 2)
-            JBUtil.Sleep(500);
+        C.WalkPathEx(path, furthest, callback);
     };
     
     return C;
