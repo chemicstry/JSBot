@@ -5,6 +5,8 @@
 #include Keyboard.js
 #include Movement.js
 #include WorldObject.js
+#include ScriptWorker.js
+#include GUI.js
 
 
 //Variables for Main.js 
@@ -13,6 +15,8 @@ var JSBot = function() {
     var GameClient;
     var GameCanvasContainer;
     var BotEnabled = false;
+    
+    C.Version = 0.1;
    
    //Enable Bot Function
     C.Enable = function()
@@ -42,7 +46,7 @@ var JSBot = function() {
         }
     };
     //Grab hooks from container within a specified Canvas
-    Hook = function()
+    C.Hook = function()
     {
         GameClient = ge;
         GameCanvasContainer = document.getElementById("canvasContainer");
@@ -53,6 +57,21 @@ var JSBot = function() {
         C.Disable();
     };
     
-    Hook();
+    
     return C;
 } ();
+
+$(document).ready(function() {
+    console.log("Loading dependencies...");
+    $('head').append($('<link href="https://intel.kd.io/kendo/styles/kendo.common.min.css" rel="stylesheet" />'));
+    $('head').append($('<link href="https://intel.kd.io/kendo/styles/kendo.silver.min.css" rel="stylesheet" />'));
+    $('head').append($('<link href="https://intel.kd.io/kendo/styles/reset.css" rel="stylesheet" />'));
+    $('head').append($('<script src="https://intel.kd.io/kendo/js/kendo.web.min.js"></script>'));
+     
+    // Wait for all dependencies to load
+    setTimeout(function(){
+        console.log("Starting bot...");
+        JSBot.Hook();
+        JBGUI.Build();
+    }, 5000);
+});
