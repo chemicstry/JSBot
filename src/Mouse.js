@@ -23,7 +23,7 @@ void Click(int button, int x = currentx, int y = currenty);
 
 #include MouseDebug.js
 
-function MouseEventCustom(event, x, y, button)
+function JBMouseEvent(event, x, y, button)
 {
     this.event = event;
     this.x = x;
@@ -56,7 +56,7 @@ var JBMouse = function() {
     {
         var Rect = GameMouseElement.getBoundingClientRect();
         
-        var event = new MouseEventCustom("mousemove", x+Rect.left, y+Rect.top, null);
+        var event = new JBMouseEvent("mousemove", x+Rect.left, y+Rect.top, null);
         MouseX = x;
         MouseY = y;
         
@@ -69,7 +69,7 @@ var JBMouse = function() {
     {
         var Rect = GameMouseElement.getBoundingClientRect();
         
-        var event = new MouseEventCustom("mousedown", x+Rect.left, y+Rect.top, button);
+        var event = new JBMouseEvent("mousedown", x+Rect.left, y+Rect.top, button);
         
         GameMouseDownHandler(event);
     };
@@ -78,7 +78,7 @@ var JBMouse = function() {
     {
         var Rect = GameMouseElement.getBoundingClientRect();
         
-        var event = new MouseEventCustom("mouseup", MouseX+Rect.left, MouseY+Rect.top, button);
+        var event = new JBMouseEvent("mouseup", MouseX+Rect.left, MouseY+Rect.top, button);
         
         GameMouseUpHandler(event);
     };

@@ -2,6 +2,7 @@
 
 #include Util.js
 #include Mouse.js
+#include Keyboard.js
 #include Movement.js
 #include WorldObject.js
 
@@ -47,6 +48,7 @@ var JSBot = function() {
         GameCanvasContainer = document.getElementById("canvasContainer");
         
         JBMouse.HookEvents(GameCanvasContainer);
+        JBKeyboard.Hook(document);
         
         C.Disable();
     };
